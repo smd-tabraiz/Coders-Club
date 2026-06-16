@@ -35,7 +35,7 @@ const AdminEvents = () => {
   }, []);
 
   const filtered = events.filter(e => {
-    const matchSearch = e.title.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = e.name?.toLowerCase().includes(search.toLowerCase()) || false;
     const matchStatus = filterStatus === 'all' || e.status === filterStatus;
     return matchSearch && matchStatus;
   });
@@ -75,7 +75,7 @@ const AdminEvents = () => {
     total: events.length,
     upcoming: events.filter(e => e.status === 'upcoming').length,
     completed: events.filter(e => e.status === 'completed').length,
-    totalRegistrations: events.reduce((sum, e) => sum + e.registrations, 0),
+    totalRegistrations: events.reduce((sum, e) => sum + (e.registrations || 0), 0),
   };
 
   return (
@@ -167,21 +167,21 @@ const AdminEvents = () => {
                   className="hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors"
                 >
                   <td className="px-5 py-4">
-                    <p className="font-bold text-slate-800 dark:text-white">{ev.title}</p>
-                    <p className="text-[10px] text-slate-500">by {ev.organizer}</p>
+                    <p className="font-bold text-slate-800 dark:text-white">{ev.name}</p>
+                    <p className="text-[10px] text-slate-500">by {ev.createdBy?.name || 'Unknown'}</p>
                   </td>
                   <td className="px-5 py-4 hidden md:table-cell">
                     <Badge variant={categoryColors[ev.category] || 'secondary'}>{ev.category}</Badge>
                   </td>
-                  <td className="px-5 py-4 text-slate-500 text-xs hidden sm:table-cell">{ev.date}</td>
+                  <td className="px-5 py-4 text-slate-500 text-xs hidden sm:table-cell">{new Date(ev.date).toDateString()}</td>
                   <td className="px-5 py-4 text-center hidden lg:table-cell">
                     <div className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
-                      {ev.registrations} / {ev.maxSeats}
+                      {ev.registrations || 0} / {ev.maxParticipants}
                     </div>
                     <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full mt-1">
                       <div
                         className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-                        style={{ width: `${Math.min(100, (ev.registrations / ev.maxSeats) * 100)}%` }}
+                        style={{ width: `${Math.min(100, ((ev.registrations || 0) / (ev.maxParticipants || 1)) * 100)}%` }}
                       />
                     </div>
                   </td>
