@@ -8,7 +8,7 @@ const api = axios.create({
 // Request interceptor to attach JWT token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,7 +24,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       // Redirect to login only if not already on public routes
       const publicPaths = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
       if (!publicPaths.includes(window.location.pathname)) {
