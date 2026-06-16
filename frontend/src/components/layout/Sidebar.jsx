@@ -48,6 +48,7 @@ const ADMIN_MENU = [
   { name: 'Send Notification', path: '/dashboard/admin/notifications', icon: HiBell },
   { label: 'ACCOUNT' },
   { name: 'Profile',         path: '/dashboard/profile',              icon: HiUser },
+  {name: 'System Settings', path: '/dashboard/superadmin/settings',  icon: HiCog6Tooth },
 ];
 
 const MEMBER_MENU = [
@@ -90,6 +91,19 @@ const ROLE_CONFIG = {
 
 // ─── Sidebar Component ────────────────────────────────────────────────────────
 
+//  <div className="p-3 border-t border-slate-800/60 space-y-1 flex-shrink-0">
+//         <button
+//           onClick={toggleSidebar}
+//           className="w-full flex items-center justify-center p-2.5 rounded-xl hover:bg-slate-800/60 text-slate-500 hover:text-white transition-colors cursor-pointer"
+//           title={isOpen ? 'Collapse' : 'Expand'}
+//         >
+//           {isOpen ? <HiChevronLeft className="w-5 h-5" /> : <HiChevronRight className="w-5 h-5" />}
+//         </button>
+//         </div>
+
+
+
+
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -125,6 +139,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </AnimatePresence>
         </NavLink>
       </div>
+
+       <div className="p-3 border-t border-slate-800/60 space-y-1 flex-shrink-0">
+        <button
+          onClick={toggleSidebar}
+          className="w-full flex items-center justify-center p-2.5 rounded-xl hover:bg-slate-800/60 text-slate-500 hover:text-white transition-colors cursor-pointer"
+          title={isOpen ? 'Collapse' : 'Expand'}
+        >
+          {isOpen ? <HiChevronLeft className="w-5 h-5" /> : <HiChevronRight className="w-5 h-5" />}
+        </button>
+        </div>
 
       {/* Role badge */}
       {/* <AnimatePresence>
@@ -196,7 +220,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </nav>
 
       {/* Footer */}
-      <div className="p-3 border-t border-slate-800/60 space-y-1 flex-shrink-0">
+      {/* <div className="p-3 border-t border-slate-800/60 space-y-1 flex-shrink-0">
         <button
           onClick={toggleSidebar}
           className="w-full flex items-center justify-center p-2.5 rounded-xl hover:bg-slate-800/60 text-slate-500 hover:text-white transition-colors cursor-pointer"
@@ -204,6 +228,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         >
           {isOpen ? <HiChevronLeft className="w-5 h-5" /> : <HiChevronRight className="w-5 h-5" />}
         </button>
+        </div> */}
+        <div>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-rose-500/10 hover:text-rose-400 text-slate-500 transition-all duration-200 cursor-pointer"

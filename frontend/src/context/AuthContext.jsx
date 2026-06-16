@@ -12,15 +12,23 @@ const AuthContext = createContext();
  */
 
 export const AuthProvider = ({ children }) => {
-  // Restore user + token from localStorage on page refresh
+  // Restore user + token from sessionStorage on page refresh
   const [user, setUser] = useState(() => {
     try {
-      const saved = localStorage.getItem('user');
-      return saved ? JSON.parse(saved) : null;
-    } catch { return null; }
+      const saved = sessionStorage.getItem('user');
+      // ✅ CORRECT: We parse the string back into an object and return it
+      return saved ? JSON.parse(saved) : null; 
+    } catch { 
+      return null; 
+    }
   });
-  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+
+  // ✅ CORRECT: Token state is defined outside at the top level
+  const [token, setToken] = useState(() => sessionStorage.getItem('token') || null);
+  
   const [loading, setLoading] = useState(true);
+
+  // ... (the rest of your code is completely correct!)
 
   // On app start: validate the saved token with the backend
   useEffect(() => {
@@ -33,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         const res = await getMe();
         const userData = res.data.data;
         setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+         sessionStorage.setItem('user', JSON.stringify(userData)); 
       } catch {
         // Token expired or invalid → clear session
         _clearSession();
@@ -87,26 +95,26 @@ export const AuthProvider = ({ children }) => {
       const res = await getMe();
       const userData = res.data.data;
       setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('user', JSON.stringify(userData));
     } catch {
       // silently fail
     }
   };
 
   // ── Helpers ───────────────────────────────────────────────────────────────
-  const _saveSession = (tok, userData) => {
-    localStorage.setItem('token', tok);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setToken(tok);
-    setUser(userData);
-  };
+ const _saveSession = (tok, userData) => {
+  sessionStorage.setItem('token', tok); // was localStorage
+  sessionStorage.setItem('user', JSON.stringify(userData)); // was localStorage
+  setToken(tok);
+  setUser(userData);
+};
 
-  const _clearSession = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setToken(null);
-    setUser(null);
-  };
+ const _clearSession = () => {
+  sessionStorage.removeItem('token'); // was localStorage
+  sessionStorage.removeItem('user'); // was localStorage
+  setToken(null);
+  setUser(null);
+};
 
   // ── Permission Helpers ────────────────────────────────────────────────────
   // Components use these instead of checking role strings directly.

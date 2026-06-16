@@ -111,6 +111,10 @@ function App() {
               {/* SuperAdmin only */}
               <Route element={<ProtectedRoute roles={['superadmin']} />}>
                 <Route path="superadmin/users" element={<UserManagement />} />
+              </Route>
+
+              {/* SuperAdmin and Admin */}
+              <Route element={<ProtectedRoute roles={['superadmin', 'admin']} />}>
                 <Route path="superadmin/settings" element={<SystemSettings />} />
               </Route>
 
