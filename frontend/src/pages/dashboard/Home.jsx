@@ -148,13 +148,13 @@ const AdminDashboard = ({ user }) => {
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
         className="p-8 rounded-2xl bg-gradient-to-tr from-slate-900 via-primary/50 to-secondary/40 text-white relative overflow-hidden shadow-xl">
-        <div className="absolute right-6 bottom-0 text-[10rem] font-black opacity-5 select-none leading-none">ADM</div>
+        <div className="absolute right-6 bottom-0.5 text-[9rem] font-black opacity-5 select-none leading-none">ADM</div>
         <div className="relative z-10 max-w-xl space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider border border-white/20 mb-2">
+          {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider border border-white/20 mb-2">
             <HiOutlineShieldCheck className="w-4 h-4" /> Admin Panel
-          </div>
+          </div> */}
           <h1 className="text-3xl font-extrabold">Hello, {user?.name}! 🛡️</h1>
-          <p className="text-slate-300 text-sm">Manage events, approve registrations, and keep the club running. You can add admins but cannot remove existing ones.</p>
+          <p className="text-slate-300 text-sm">Manage events, approve registrations, and keep the club running.</p>
         </div>
       </motion.div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
