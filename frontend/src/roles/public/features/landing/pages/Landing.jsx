@@ -1,0 +1,329 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { HiUsers, HiCalendar, HiCodeBracket, HiTrophy, HiChevronDown, HiBars3, HiXMark } from 'react-icons/hi2';
+import { SiGithub, SiLinkedin, SiInstagram } from 'react-icons/si';
+
+import Events from '../../../../shared/features/events/pages/Events';
+import Leaderboard from '../../../../shared/features/leaderboard/pages/Leaderboard';
+import Gallery from '../../../../shared/features/gallery/pages/Gallery';
+import Teams from '../../../../shared/features/teams/pages/Teams';
+import Reviews from '../components/Reviews';
+import Contact from '../../../../shared/features/contact/pages/Contact';
+
+// Stat counter helper component
+const Counter = ({ to, label, icon: Icon }) => {
+  const [count, setCount] = useState(0);
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    let start = 0;
+    const end = parseInt(to.replace(/\D/g, ''));
+    if (start === end) return;
+
+    let totalDuration = 2000;
+    let incrementTime = Math.abs(Math.floor(totalDuration / end));
+    
+    let timer = setInterval(() => {
+      start += 1;
+      setCount(start);
+      if (start === end) clearInterval(timer);
+    }, Math.max(incrementTime, 15));
+
+    return () => clearInterval(timer);
+  }, [to]);
+
+  return (
+    <div ref={elementRef} className="flex flex-col items-center p-6 glass rounded-2xl text-center space-y-2">
+      <div className="p-4 rounded-full bg-primary/10 text-primary dark:text-primary-300 text-3xl">
+        <Icon />
+      </div>
+      <h3 className="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-white">
+        {count}
+        {to.includes('+') ? '+' : ''}
+      </h3>
+      <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">{label}</p>
+    </div>
+  );
+};
+
+const Landing = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Events', href: '#events' },
+    { name: 'Team', href: '#team' },
+    { name: 'Leaderboard', href: '#leaderboard' },
+    { name: 'Gallery', href: '#gallery' },
+    { name: 'Contact', href: '#contact' },
+  ];
+
+  return (
+    <div id="home" className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 overflow-x-hidden selection:bg-primary/20 selection:text-primary">
+      
+      {/* Landing Sticky Navbar */}
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? 'glass py-4 shadow-lg' : 'bg-transparent py-6'
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-secondary text-white font-bold text-lg shadow-lg shadow-primary/30">
+              CC
+            </div>
+            <span className="font-extrabold text-slate-800 dark:text-white text-xl tracking-wide">
+              Coders Club
+            </span>
+          </Link>
+
+          {/* Desktop Nav Links */}
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary-400 transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+            <Link
+              to="/login"
+              className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-600 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all"
+            >
+              Join Us
+            </Link>
+          </div>
+
+          {/* Mobile Menu Icon */}
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2 rounded-lg hover:bg-slate-200/20 md:hidden dark:text-white cursor-pointer"
+          >
+            <HiBars3 className="w-6 h-6" />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Nav Overlay Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-50 glass flex flex-col justify-center items-center gap-8"
+          >
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute top-6 right-6 p-2 rounded-lg hover:bg-slate-200/20 dark:text-white cursor-pointer"
+            >
+              <HiXMark className="w-7 h-7" />
+            </button>
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-2xl font-bold text-slate-800 dark:text-white hover:text-primary transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+            <Link
+              to="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-8 py-3.5 rounded-xl bg-primary hover:bg-primary-600 text-white font-bold text-lg shadow-lg shadow-primary/25"
+            >
+              Join Community
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 1. Hero Section */}
+      <header className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden bg-gradient-to-tr from-slate-900 via-primary-950 to-slate-900 text-white select-none">
+        
+        {/* Animated code brackets in background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <span className="absolute text-slate-800/40 text-[18vw] font-bold top-[10%] left-[5%] animate-float select-none">{'{'}</span>
+          <span className="absolute text-slate-800/40 text-[18vw] font-bold bottom-[10%] right-[5%] animate-float-delayed select-none">{'}'}</span>
+          <span className="absolute text-slate-800/30 text-[12vw] font-bold top-[40%] right-[12%] animate-float select-none">{'</>'}</span>
+          <span className="absolute text-slate-800/35 text-[15vw] font-bold bottom-[30%] left-[8%] animate-float-delayed select-none">{';'}</span>
+        </div>
+
+        <div className="max-w-5xl mx-auto px-6 text-center space-y-8 relative z-10 flex flex-col items-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold uppercase tracking-wider text-accent-300"
+          >
+            🚀 Welcome to the Future of Coding
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-5xl md:text-7xl font-extrabold tracking-tight leading-none"
+          >
+            Coders Club <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-primary-400 to-secondary font-black">
+              GPREC
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto font-medium"
+          >
+            Empowering coders, building future innovators at G. Pulla Reddy Engineering College, Kurnool.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-4 pt-4"
+          >
+            <Link
+              to="/login"
+              className="px-8 py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-white/10"
+            >
+              Join Our Community
+            </Link>
+            <a
+              href="#events"
+              className="px-8 py-3.5 rounded-xl border border-white/30 text-white font-bold hover:bg-white/10 hover:scale-105 active:scale-95 transition-all"
+            >
+              Explore Events
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Bouncing Chevron scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <HiChevronDown className="w-8 h-8 text-slate-400" />
+        </div>
+      </header>
+
+      {/* 2. About / Features Section */}
+      <section id="about" className="py-24 max-w-7xl mx-auto px-6">
+        <div className="text-center space-y-4 mb-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800 dark:text-white inline-block relative pb-2.5">
+            What We Do
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-accent rounded-full" />
+          </h2>
+          <p className="text-slate-500 max-w-lg mx-auto font-medium">
+            Fostering programming culture and engineering excellence through a variety of student activities.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            { title: 'Coding Competitions', desc: 'Sharpen DSA and logical problem solving with regular competitive quizzes and challenges.', icon: '🏆' },
+            { title: 'Technical Workshops', desc: 'Hands-on practical classes covering web stack, machine learning, and cloud infrastructure.', icon: '🔧' },
+            { title: 'Innovative Hackathons', desc: 'Convert brainstorming ideas into production prototypes in focused 24 to 48 hour hack marathons.', icon: '💻' },
+            { title: 'Competitive Programming', desc: 'Prepare for national level ICPC, Codeforces, Leetcode, and industry assessment tests.', icon: '📊' },
+            { title: 'Technical Sessions', desc: 'Listen to expert panel reviews, alumni career guides, and host open doubt clears.', icon: '🎤' }
+          ].map((feat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="glass p-8 rounded-2xl shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all border border-slate-200/20"
+            >
+              <div className="text-4xl mb-4">{feat.icon}</div>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">{feat.title}</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">{feat.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* 3. Statistics Section */}
+      <section id="stats" className="py-20 bg-gradient-to-br from-slate-900 to-primary-950 text-white">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <Counter to="500+" label="Active Members" icon={HiUsers} />
+          <Counter to="50+" label="Events Held" icon={HiCalendar} />
+          <Counter to="20+" label="Active Projects" icon={HiCodeBracket} />
+          <Counter to="100+" label="Achievements" icon={HiTrophy} />
+        </div>
+      </section>
+
+      {/* 4. Events Section */}
+      <section id="events" className="py-24 max-w-7xl mx-auto px-6">
+        <Events />
+      </section>
+
+      {/* 4.5 Team Section */}
+      <section id="team" className="py-24 max-w-7xl mx-auto px-6 border-t border-slate-200/10">
+        <Teams />
+      </section>
+
+      {/* 5. Leaderboard Section */}
+      <section id="leaderboard" className="py-24 max-w-7xl mx-auto px-6 border-t border-slate-200/10">
+        <Leaderboard />
+      </section>
+
+      {/* 6. Gallery Section */}
+      <section id="gallery" className="py-24 max-w-7xl mx-auto px-6 border-t border-slate-200/10">
+        <Gallery />
+      </section>
+
+      {/* 6. Testimonials Section */}
+      <Reviews />
+
+      {/* 7. Contact Section */}
+      <section id="contact" className="py-24 max-w-7xl mx-auto px-6 border-t border-slate-200/10">
+        <Contact />
+      </section>
+
+      {/* 7. CTA / Footer Join */}
+      <section className="py-20 text-center bg-gradient-to-tr from-primary via-secondary to-accent text-white">
+        <div className="max-w-3xl mx-auto px-6 space-y-6">
+          <h2 className="text-3xl md:text-4xl font-extrabold">Ready to Boost Your Technical Skills?</h2>
+          <p className="text-slate-100 max-w-lg mx-auto">
+            Become a part of GPREC’s official coding network and start building industry projects.
+          </p>
+          <Link
+            to="/login"
+            className="inline-block px-8 py-3.5 bg-white text-slate-900 font-bold rounded-xl shadow-xl hover:scale-105 transition-all"
+          >
+            Create Your Account
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-950 text-slate-500 py-12 px-6 text-center border-t border-slate-900">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-sm">© 2026 Coders Club GPREC. All rights reserved.</p>
+          <div className="flex gap-4 text-xl">
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-white"><SiGithub /></a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-white"><SiLinkedin /></a>
+            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-white"><SiInstagram /></a>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
+};
+
+export default Landing;

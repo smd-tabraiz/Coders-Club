@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from './AuthContext';
+import { useSocket } from './SocketContext';
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
   const { user } = useAuth();
+  const { socket } = useSocket();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -13,6 +15,21 @@ export const NotificationProvider = ({ children }) => {
     if (!user) return;
     fetchNotifications();
   }, [user]);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('newNotification', (data) => {
+      fetchNotifications();
+    });
+    socket.on('registrationStatusChanged', (data) => {
+      fetchNotifications();
+    });
+
+    return () => {
+      socket.off('newNotification');
+      socket.off('registrationStatusChanged');
+    };
+  }, [socket]);
 
   const fetchNotifications = async () => {
     try {

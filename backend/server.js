@@ -16,7 +16,8 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || origin.startsWith('http://localhost:')) {
+    const allowedOrigins = [process.env.FRONTEND_URL];
+    if (!origin || origin.startsWith('http://localhost:') || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -24,25 +25,40 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 
-// Import Route Files
-const authRoutes = require('./routes/auth.routes');
-const userRoutes = require('./routes/user.routes');
-const eventRoutes = require('./routes/event.routes');
-const registrationRoutes = require('./routes/registration.routes');
-const teamRoutes = require('./routes/team.routes');
-const galleryRoutes = require('./routes/gallery.routes');
-const certificateRoutes = require('./routes/certificate.routes');
-const notificationRoutes = require('./routes/notification.routes');
-const contactRoutes = require('./routes/contact.routes');
-const analyticsRoutes = require('./routes/analytics.routes');
+// ─── NEW: ROLE-BASED ROUTERS ──────────────────────────────────────
+const publicRoutes = require('./roles/public/public.routes');
+const studentRoutes = require('./roles/student/student.routes');
+const adminRoutes = require('./roles/admin/admin.routes');
+const superadminRoutes = require('./roles/superadmin/superadmin.routes');
 
-// Mount Routes
+app.use('/api/public', publicRoutes);
+app.use('/api/student', studentRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/superadmin', superadminRoutes);
+
+// ─── LEGACY FEATURE-BASED ROUTERS (Pending full migration) ────────
+// We are keeping these intact for the features that haven't been split yet!
+const authRoutes = require('./features/auth/auth.routes');
+const eventRoutes = require('./features/event/event.routes');
+const userRoutes = require('./features/user/user.routes');
+const registrationRoutes = require('./features/registration/registration.routes');
+const teamRoutes = require('./features/team/team.routes');
+const galleryRoutes = require('./features/gallery/gallery.routes');
+const certificateRoutes = require('./features/certificate/certificate.routes');
+const notificationRoutes = require('./features/notification/notification.routes');
+const contactRoutes = require('./features/contact/contact.routes');
+const analyticsRoutes = require('./features/analytics/analytics.routes');
+const activityRoutes = require('./features/activity/activity.routes');
+const reviewRoutes = require('./features/review/review.routes');
+
 app.use('/api/auth', authRoutes);
+// Temporarily keeping legacy mounts so the frontend doesn't break for unmigrated parts
+app.use('/api/events', eventRoutes); 
 app.use('/api/users', userRoutes);
-app.use('/api/events', eventRoutes);
 app.use('/api/registrations', registrationRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/gallery', galleryRoutes);
@@ -50,70 +66,8 @@ app.use('/api/certificates', certificateRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/analytics', analyticsRoutes);
-
-// Optional Seeding Route (Helper for first run)
-app.post('/api/seed', async (req, res, next) => {
-  try {
-    const User = require('./models/User');
-    const Event = require('./models/Event');
-    const Team = require('./models/Team');
-    const Gallery = require('./models/Gallery');
-
-    // Clean up
-    await User.deleteMany({ role: { $ne: 'superadmin' } });
-    await Event.deleteMany({});
-    await Team.deleteMany({});
-    await Gallery.deleteMany({});
-
-    // Seed mock team batch 2026
-    await Team.create({
-      batch: '2026',
-      groupPhoto: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=60',
-      members: [
-        {
-          name: 'Anish Reddy',
-          position: 'President',
-          role: 'Club Head',
-          domain: 'Competitive Programming',
-          skills: ['C++', 'DSA', 'Algorithms'],
-          linkedIn: 'https://linkedin.com',
-          github: 'https://github.com',
-        },
-        {
-          name: 'Sai Kiran',
-          position: 'Vice President',
-          role: 'Operations Head',
-          domain: 'Web Development',
-          skills: ['React', 'Node.js', 'Express'],
-          linkedIn: 'https://linkedin.com',
-          github: 'https://github.com',
-        },
-        {
-          name: 'Venkatesh P',
-          position: 'Technical Lead',
-          role: 'Core Team',
-          domain: 'Full Stack',
-          skills: ['MERN', 'Next.js', 'TypeScript'],
-          linkedIn: 'https://linkedin.com',
-          github: 'https://github.com',
-        },
-        {
-          name: 'Harika K',
-          position: 'Design Lead',
-          role: 'Core Team',
-          domain: 'UI/UX Design',
-          skills: ['Figma', 'CSS', 'Tailwind'],
-          linkedIn: 'https://linkedin.com',
-          github: 'https://github.com',
-        }
-      ]
-    });
-
-    res.json({ success: true, message: 'Seeding successful! Added dummy teams and reset database collections.' });
-  } catch (error) {
-    next(error);
-  }
-});
+app.use('/api/activity', activityRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date() });
@@ -122,7 +76,12 @@ app.get('/api/health', (req, res) => {
 // Global Error Handler
 app.use(errorHandler);
 
+const http = require('http');
+const server = http.createServer(app);
+const socket = require('./socket');
+
+// Initialize Socket.io
+socket.init(server);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

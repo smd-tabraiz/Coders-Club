@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useNotifications } from '../../context/NotificationContext';
@@ -12,11 +12,40 @@ const Navbar = ({ onMobileToggle }) => {
   const { unreadCount } = useNotifications();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const notificationPath = user?.role === 'superadmin' ? '/superadmin/my-notifications' :
+                           user?.role === 'admin' ? '/admin/my-notifications' :
+                           user?.role === 'member' ? '/member/notifications' :
+                           '/dashboard/notifications';
+
+  const handleNotificationClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === notificationPath) {
+      navigate(-1);
+    } else {
+      navigate(notificationPath);
+    }
+  };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/dashboard/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const profilePath = user?.role === 'superadmin' ? '/superadmin/profile' :
+                      user?.role === 'admin' ? '/admin/profile' :
+                      user?.role === 'member' ? '/member/profile' :
+                      '/dashboard/profile';
+
+  const handleProfileClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === profilePath) {
+      navigate(-1);
+    } else {
+      navigate(profilePath);
     }
   };
 
@@ -31,7 +60,7 @@ const Navbar = ({ onMobileToggle }) => {
           <HiBars3 className="w-6 h-6" />
         </button>
         <h2 className="hidden sm:block text-xl font-bold text-slate-800 dark:text-white capitalize">
-          Welcome, {user?.name || 'Coder'}
+          Hello, {user?.name || 'Coder'}
         </h2>
       </div>
 
@@ -58,8 +87,8 @@ const Navbar = ({ onMobileToggle }) => {
         </button>
 
         {/* Notifications */}
-        <Link
-          to="/dashboard/notifications"
+        <button
+          onClick={handleNotificationClick}
           className="relative p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
         >
           <HiBell className="w-5 h-5" />
@@ -68,18 +97,12 @@ const Navbar = ({ onMobileToggle }) => {
               {unreadCount}
             </span>
           )}
-        </Link>
+        </button>
 
         {/* User Profile Avatar Link */}
-        <Link to="/dashboard/profile" className="flex items-center gap-2 select-none cursor-pointer">
+        <button onClick={handleProfileClick} className="flex items-center gap-2 select-none cursor-pointer border-none bg-transparent p-0">
           <Avatar src={user?.photo} name={user?.name} size="sm" />
-          <div className="hidden lg:block text-left">
-            <p className="text-sm font-semibold text-slate-800 dark:text-white leading-tight">
-              {user?.name || 'GPREC User'}
-            </p>
-            <p className="text-[10px] text-slate-500 capitalize">{user?.role || 'Member'}</p>
-          </div>
-        </Link>
+        </button>
       </div>
     </header>
   );

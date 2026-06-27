@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser, registerUser, getMe } from '../api/auth.service';
+import { loginUser, registerUser, getMe } from '../roles/public/features/auth/auth.service';
+import api from '../api/axios';
+
 
 const AuthContext = createContext();
 
@@ -90,6 +92,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   // ── Update Profile ────────────────────────────────────────────────────────
+  const updateProfile = async (formData) => {
+    try {
+      await api.put(`/users/${user._id}`, formData);
+      if (user.role === 'superadmin') {
+        const updatedUser = { ...user, ...formData };
+        setUser(updatedUser);
+        sessionStorage.setItem('user', JSON.stringify(updatedUser));
+      } else {
+        await refreshUser();
+      }
+    } catch (err) {
+      console.error('Failed to update profile', err);
+      throw err;
+    }
+  };
+
   const refreshUser = async () => {
     try {
       const res = await getMe();
@@ -127,7 +145,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, refreshUser, can }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, refreshUser, updateProfile, can }}>
       {children}
     </AuthContext.Provider>
   );

@@ -27,7 +27,8 @@ const ProtectedRoute = ({ roles }) => {
 
   // Role check — redirect unauthorized users to their own dashboard
   if (roles && !roles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+    const dashPath = user.role === 'student' ? '/dashboard' : `/${user.role}`;
+    return <Navigate to={dashPath} replace />;
   }
 
   return <Outlet />;

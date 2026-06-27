@@ -15,11 +15,14 @@ const Avatar = ({ src, name = '', size = 'md', className = '' }) => {
     return initials.substring(0, 2).toUpperCase();
   };
 
+  const isDefaultAvatar = src === 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=60';
+  const displaySrc = isDefaultAvatar ? '' : src;
+
   return (
     <div className={`relative inline-block ${className}`}>
-      {src ? (
+      {displaySrc ? (
         <img
-          src={src}
+          src={displaySrc}
           alt={name}
           className={`object-cover rounded-full border border-slate-200/50 dark:border-slate-800/50 ${sizeClasses[size]}`}
           onError={(e) => {

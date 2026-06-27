@@ -14,56 +14,61 @@ import {
 
 const SUPERADMIN_MENU = [
   { label: 'OVERVIEW' },
-  { name: 'Dashboard',       path: '/dashboard',                      icon: HiHome,                  end: true },
+  { name: 'Dashboard',       path: '/superadmin',                      icon: HiHome,                  end: true },
   { label: 'USER CONTROL' },
-  { name: 'User Management', path: '/dashboard/superadmin/users',     icon: HiUsers },
-  { name: 'Add Admin',       path: '/dashboard/admin/add-admin',      icon: HiUserPlus },
+  { name: 'User Management', path: '/superadmin/users',     icon: HiUsers },
+  { name: 'Add Admin',       path: '/superadmin/add-admin',      icon: HiUserPlus },
   { label: 'CONTENT' },
-  { name: 'Manage Events',   path: '/dashboard/admin/events',         icon: HiCalendarDays },
-  { name: 'Create Event',    path: '/dashboard/events/create',        icon: HiPlusCircle },
-  { name: 'Registrations',   path: '/dashboard/admin/registrations',  icon: HiClipboardDocumentList },
-  { name: 'Teams',           path: '/dashboard/teams',                icon: HiUserGroup },
-  { name: 'Gallery',         path: '/dashboard/gallery',              icon: HiPhoto },
+  { name: 'Manage Events',   path: '/superadmin/events',         icon: HiCalendarDays, end: true },
+  { name: 'Create Event',    path: '/superadmin/events/create',        icon: HiPlusCircle },
+  { name: 'Registrations',   path: '/superadmin/registrations',  icon: HiClipboardDocumentList },
+  { name: 'Teams',           path: '/superadmin/teams',                icon: HiUserGroup },
+  { name: 'Gallery',         path: '/superadmin/gallery',              icon: HiPhoto },
   { label: 'REPORTS' },
-  { name: 'Analytics',       path: '/dashboard/analytics',            icon: HiChartBar },
-  { name: 'Send Notification', path: '/dashboard/admin/notifications', icon: HiBell },
+  { name: 'Analytics',       path: '/superadmin/analytics',            icon: HiChartBar },
+  { name: 'Reviews',         path: '/superadmin/reviews',              icon: HiDocumentText },
+  { name: 'Activity Logs',   path: '/superadmin/activity',             icon: HiShieldCheck },
+  { name: 'Send Notification', path: '/superadmin/notifications', icon: HiBell },
+  { name: 'Support Inbox',   path: '/superadmin/inbox',                icon: HiEnvelope },
   { label: 'SYSTEM' },
-  { name: 'System Settings', path: '/dashboard/superadmin/settings',  icon: HiCog6Tooth },
-  { name: 'Profile',         path: '/dashboard/profile',              icon: HiUser },
+  { name: 'System Settings', path: '/superadmin/settings',  icon: HiCog6Tooth },
+  { name: 'Profile',         path: '/superadmin/profile',              icon: HiUser },
 ];
 
 const ADMIN_MENU = [
   { label: 'OVERVIEW' },
-  { name: 'Dashboard',       path: '/dashboard',                      icon: HiHome,                  end: true },
+  { name: 'Dashboard',       path: '/admin',                      icon: HiHome,                  end: true },
   { label: 'ADMIN' },
-  { name: 'Add Admin',       path: '/dashboard/admin/add-admin',      icon: HiUserPlus },
+  { name: 'User Management', path: '/admin/users',          icon: HiUsers },
+  { name: 'Add Admin',       path: '/admin/add-admin',      icon: HiUserPlus },
   { label: 'CONTENT' },
-  { name: 'Manage Events',   path: '/dashboard/admin/events',         icon: HiCalendarDays },
-  { name: 'Create Event',    path: '/dashboard/events/create',        icon: HiPlusCircle },
-  { name: 'Registrations',   path: '/dashboard/admin/registrations',  icon: HiClipboardDocumentList },
-  { name: 'Teams',           path: '/dashboard/teams',                icon: HiUserGroup },
-  { name: 'Gallery',         path: '/dashboard/gallery',              icon: HiPhoto },
+  { name: 'Manage Events',   path: '/admin/events',         icon: HiCalendarDays, end: true },
+  { name: 'Create Event',    path: '/admin/events/create',        icon: HiPlusCircle },
+  { name: 'Registrations',   path: '/admin/registrations',  icon: HiClipboardDocumentList },
+  { name: 'Teams',           path: '/admin/teams',                icon: HiUserGroup },
+  { name: 'Gallery',         path: '/admin/gallery',              icon: HiPhoto },
   { label: 'REPORTS' },
-  { name: 'Analytics',       path: '/dashboard/analytics',            icon: HiChartBar },
-  { name: 'Send Notification', path: '/dashboard/admin/notifications', icon: HiBell },
-  { label: 'ACCOUNT' },
-  { name: 'Profile',         path: '/dashboard/profile',              icon: HiUser },
-  {name: 'System Settings', path: '/dashboard/superadmin/settings',  icon: HiCog6Tooth },
+  { name: 'Analytics',       path: '/admin/analytics',            icon: HiChartBar },
+  { name: 'Reviews',         path: '/admin/reviews',              icon: HiDocumentText },
+  { name: 'Send Notification', path: '/admin/notifications', icon: HiBell },
+  { name: 'Support Inbox',   path: '/admin/inbox',                icon: HiEnvelope },
+  { label: 'SYSTEM' },
+  { name: 'System Settings', path: '/admin/settings',       icon: HiCog6Tooth },
+  { name: 'Profile',         path: '/admin/profile',              icon: HiUser },
 ];
 
 const MEMBER_MENU = [
   { label: 'OVERVIEW' },
-  { name: 'Dashboard',       path: '/dashboard',                      icon: HiHome,                  end: true },
-  { label: 'VIEW ACCESS' },
-  { name: 'All Events',      path: '/dashboard/admin/events',         icon: HiCalendarDays },
-  { name: 'Registrations',   path: '/dashboard/admin/registrations',  icon: HiClipboardDocumentList },
-  { name: 'Teams',           path: '/dashboard/teams',                icon: HiUserGroup },
-  { name: 'Gallery',         path: '/dashboard/gallery',              icon: HiPhoto },
+  { name: 'Dashboard',       path: '/member',                      icon: HiHome,                  end: true },
+  { name: 'All Events',      path: '/member/events',         icon: HiCalendarDays },
+  { name: 'Registrations',   path: '/member/registrations',  icon: HiClipboardDocumentList },
+  { name: 'Teams',           path: '/member/teams',                icon: HiUserGroup },
+  { name: 'Gallery',         path: '/member/gallery',              icon: HiPhoto },
   { label: 'REPORTS' },
-  { name: 'Analytics',       path: '/dashboard/analytics',            icon: HiChartBar },
+  { name: 'Analytics',       path: '/member/analytics',            icon: HiChartBar },
   { label: 'ACCOUNT' },
-  { name: 'Profile',         path: '/dashboard/profile',              icon: HiUser },
-  { name: 'Contact',         path: '/dashboard/contact',              icon: HiEnvelope },
+  { name: 'Profile',         path: '/member/profile',              icon: HiUser },
+  { name: 'Contact',         path: '/member/contact',              icon: HiEnvelope },
 ];
 
 const STUDENT_MENU = [
@@ -124,7 +129,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       className="hidden md:flex flex-col h-screen fixed left-0 top-0 z-30 bg-slate-950 border-r border-slate-800/60 text-slate-400 shadow-2xl select-none overflow-hidden"
     >
       {/* Brand */}
-      <div className="flex items-center gap-3 h-[72px] px-4 border-b border-slate-800/60 flex-shrink-0">
+      <div className="flex items-center justify-between h-[72px] px-4 border-b border-slate-800/60 flex-shrink-0">
         <NavLink to="/" className="flex items-center gap-3 min-w-0">
           <div className={`flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-tr ${cfg.gradient} text-white font-black text-base flex items-center justify-center shadow-lg`}>
             CC
@@ -138,17 +143,30 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             )}
           </AnimatePresence>
         </NavLink>
-      </div>
 
-       <div className="p-3 border-t border-slate-800/60 space-y-1 flex-shrink-0">
+        {/* Toggle Button */}
         <button
           onClick={toggleSidebar}
-          className="w-full flex items-center justify-center p-2.5 rounded-xl hover:bg-slate-800/60 text-slate-500 hover:text-white transition-colors cursor-pointer"
+          className={`p-1.5 rounded-lg hover:bg-slate-800/60 text-slate-500 hover:text-white transition-colors cursor-pointer ${!isOpen && 'hidden'}`}
           title={isOpen ? 'Collapse' : 'Expand'}
         >
-          {isOpen ? <HiChevronLeft className="w-5 h-5" /> : <HiChevronRight className="w-5 h-5" />}
+          <HiChevronLeft className="w-5 h-5" />
         </button>
+        
+      </div>
+
+      {/* Toggle Button when collapsed (centered below logo) */}
+      {!isOpen && (
+        <div className="flex justify-center mt-4 mb-2">
+          <button
+            onClick={toggleSidebar}
+            className="bg-slate-800/80 text-white rounded-lg p-2 shadow-md hover:bg-primary transition-colors cursor-pointer border border-slate-700/50"
+            title="Expand Sidebar"
+          >
+            <HiChevronRight className="w-5 h-5" />
+          </button>
         </div>
+      )}
 
       {/* Role badge */}
       {/* <AnimatePresence>

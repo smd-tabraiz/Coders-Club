@@ -19,9 +19,10 @@ const GuestRoute = () => {
     );
   }
 
-  // Already authenticated → go to dashboard
+  // Already authenticated → go to their respective dashboard
   if (token && user) {
-    return <Navigate to="/dashboard" replace />;
+    const dashPath = user.role === 'student' ? '/dashboard' : `/${user.role}`;
+    return <Navigate to={dashPath} replace />;
   }
 
   return <Outlet />;

@@ -33,7 +33,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
               )}
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-200/20 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                className="p-2 rounded-lg bg-slate-200/50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-slate-300/50 hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 <HiXMark className="w-6 h-6" />
               </button>

@@ -1,51 +1,49 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// Layout
+// Layout & Common
 import DashboardLayout from './components/layout/DashboardLayout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import GuestRoute from './components/common/GuestRoute';
 import Spinner from './components/ui/Spinner';
 
 // ── Pages: Public
-import Landing from './pages/Landing';
+import Landing from './roles/public/features/landing/pages/Landing';
+import Login from './roles/public/features/auth/pages/Login';
+import Register from './roles/public/features/auth/pages/Register';
+import ForgotPassword from './roles/public/features/auth/pages/ForgotPassword';
+import ResetPassword from './roles/public/features/auth/pages/ResetPassword';
 
-// ── Pages: Auth
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
+// ── Pages: Shared (All authenticated roles)
+import Home from './roles/shared/features/dashboard/pages/Home';
+import Search from './roles/shared/features/dashboard/pages/Search';
+import Profile from './roles/shared/features/users/pages/Profile';
+import Gallery from './roles/shared/features/gallery/pages/Gallery';
+import Contact from './roles/shared/features/contact/pages/Contact';
+import Leaderboard from './roles/shared/features/leaderboard/pages/Leaderboard';
+import Events from './roles/shared/features/events/pages/Events';
+import EventDetail from './roles/shared/features/events/pages/EventDetail';
+import Teams from './roles/shared/features/teams/pages/Teams';
+import TeamBatch from './roles/shared/features/teams/pages/TeamBatch';
+import Notifications from './roles/shared/features/notifications/pages/Notifications';
+import Analytics from './roles/shared/features/analytics/pages/Analytics';
 
-// ── Pages: Dashboard (all authenticated roles)
-import Home from './pages/dashboard/Home';
-import Events from './pages/dashboard/Events';
-import EventDetail from './pages/dashboard/EventDetail';
-import Teams from './pages/dashboard/Teams';
-import TeamBatch from './pages/dashboard/TeamBatch';
-import Gallery from './pages/dashboard/Gallery';
-import Analytics from './pages/dashboard/Analytics';
-import Notifications from './pages/dashboard/Notifications';
-import Search from './pages/dashboard/Search';
-import Profile from './pages/dashboard/Profile';
-import Contact from './pages/dashboard/Contact';
-import Leaderboard from './pages/dashboard/Leaderboard';
+// ── Pages: Student
+import MyRegistrations from './roles/student/features/registrations/pages/MyRegistrations';
 
-// ── Pages: Student-specific
-import MyRegistrations from './pages/student/MyRegistrations';
+// ── Pages: Admin
+import CreateEvent from './roles/admin/features/events/pages/CreateEvent';
+import AdminEvents from './roles/admin/features/events/pages/AdminEvents';
+import AdminRegistrations from './roles/admin/features/registrations/pages/AdminRegistrations';
+import AdminNotifications from './roles/admin/features/notifications/pages/AdminNotifications';
+import AddAdmin from './roles/admin/features/users/pages/AddAdmin';
+import SupportInbox from './roles/admin/features/contact/pages/SupportInbox';
+import AdminReviews from './roles/admin/features/reviews/pages/AdminReviews';
 
-// ── Pages: Admin + SuperAdmin (edit access)
-import CreateEvent from './pages/dashboard/CreateEvent';
-import AdminEvents from './pages/admin/AdminEvents';
-import AdminRegistrations from './pages/admin/AdminRegistrations';
-import AdminNotifications from './pages/admin/AdminNotifications';
-import AddAdmin from './pages/admin/AddAdmin';
-
-// ── Pages: Club Member + Admin + SuperAdmin (view or manage)
-// (AdminEvents and AdminRegistrations already handle read-only for members via canEdit)
-
-// ── Pages: SuperAdmin only
-import UserManagement from './pages/superadmin/UserManagement';
-import SystemSettings from './pages/superadmin/SystemSettings';
+// ── Pages: SuperAdmin
+import UserManagement from './roles/superadmin/features/users/pages/UserManagement';
+import SystemSettings from './roles/superadmin/features/settings/pages/SystemSettings';
+import ActivityLogs from './roles/superadmin/features/activity/pages/ActivityLogs';
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
@@ -69,56 +67,94 @@ function App() {
             <Route path="/reset-password/:token" element={<ResetPassword />} />
           </Route>
 
-          {/* ── Protected: All authenticated roles ─────────────── */}
+          {/* ── Protected: Role-Based Routing ────────────────────── */}
+          
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<DashboardLayout />}>
-
-              {/* Common (all 4 roles) */}
-              <Route index element={<Home />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="gallery" element={<Gallery />} />
-              <Route path="search" element={<Search />} />
-
-              {/* Student + all */}
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="leaderboard" element={<Leaderboard />} />
-              <Route path="events" element={<Events />} />
-              <Route path="events/:id" element={<EventDetail />} />
-              <Route path="teams" element={<Teams />} />
-              <Route path="teams/:teamId/batch" element={<TeamBatch />} />
-              <Route path="analytics" element={<Analytics />} />
-
-              {/* Student-only */}
-              <Route element={<ProtectedRoute roles={['student']} />}>
-                <Route path="my-registrations" element={<MyRegistrations />} />
-              </Route>
-
-              {/* Admin + SuperAdmin + Member — view-only for member */}
-              <Route element={<ProtectedRoute roles={['admin', 'superadmin', 'member']} />}>
-                <Route path="admin/events" element={<AdminEvents />} />
-                <Route path="admin/registrations" element={<AdminRegistrations />} />
-              </Route>
-
-              {/* Admin + SuperAdmin — edit/manage */}
-              <Route element={<ProtectedRoute roles={['admin', 'superadmin']} />}>
+            
+            {/* SuperAdmin Dashboard */}
+            <Route element={<ProtectedRoute roles={['superadmin']} />}>
+              <Route path="/superadmin" element={<DashboardLayout />}>
+                <Route index element={<Home />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="add-admin" element={<AddAdmin />} />
+                <Route path="settings" element={<SystemSettings />} />
+                <Route path="activity" element={<ActivityLogs />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="gallery" element={<Gallery />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="events" element={<AdminEvents />} />
+                <Route path="events/:id" element={<EventDetail />} />
                 <Route path="events/create" element={<CreateEvent />} />
                 <Route path="events/:id/edit" element={<CreateEvent />} />
-                <Route path="admin/add-admin" element={<AddAdmin />} />
-                <Route path="admin/notifications" element={<AdminNotifications />} />
+                <Route path="registrations" element={<AdminRegistrations />} />
+                <Route path="notifications" element={<AdminNotifications />} />
+                <Route path="inbox" element={<SupportInbox />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="reviews" element={<AdminReviews />} />
               </Route>
-
-              {/* SuperAdmin only */}
-              <Route element={<ProtectedRoute roles={['superadmin']} />}>
-                <Route path="superadmin/users" element={<UserManagement />} />
-              </Route>
-
-              {/* SuperAdmin and Admin */}
-              <Route element={<ProtectedRoute roles={['superadmin', 'admin']} />}>
-                <Route path="superadmin/settings" element={<SystemSettings />} />
-              </Route>
-
             </Route>
+
+            {/* Admin Dashboard */}
+            <Route element={<ProtectedRoute roles={['admin']} />}>
+              <Route path="/admin" element={<DashboardLayout />}>
+                <Route index element={<Home />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="add-admin" element={<AddAdmin />} />
+                <Route path="settings" element={<SystemSettings />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="gallery" element={<Gallery />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="events" element={<AdminEvents />} />
+                <Route path="events/:id" element={<EventDetail />} />
+                <Route path="events/create" element={<CreateEvent />} />
+                <Route path="events/:id/edit" element={<CreateEvent />} />
+                <Route path="registrations" element={<AdminRegistrations />} />
+                <Route path="notifications" element={<AdminNotifications />} />
+                <Route path="inbox" element={<SupportInbox />} />
+                <Route path="my-notifications" element={<Notifications />} />
+                <Route path="teams" element={<Teams />} />
+                <Route path="teams/:teamId/batch" element={<TeamBatch />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="reviews" element={<AdminReviews />} />
+              </Route>
+            </Route>
+
+            {/* Member Dashboard (View only for events) */}
+            <Route element={<ProtectedRoute roles={['member']} />}>
+              <Route path="/member" element={<DashboardLayout />}>
+                <Route index element={<Home />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="gallery" element={<Gallery />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="events" element={<Events />} />
+                <Route path="events/:id" element={<EventDetail />} />
+                <Route path="teams" element={<Teams />} />
+                <Route path="teams/:teamId/batch" element={<TeamBatch />} />
+                <Route path="leaderboard" element={<Leaderboard />} />
+                <Route path="notifications" element={<Notifications />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="registrations" element={<AdminRegistrations />} />
+              </Route>
+            </Route>
+
+            {/* Student/User Dashboard */}
+            <Route element={<ProtectedRoute roles={['student']} />}>
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<Home />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="search" element={<Search />} />
+                <Route path="gallery" element={<Gallery />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="leaderboard" element={<Leaderboard />} />
+                <Route path="events" element={<Events />} />
+                <Route path="events/:id" element={<EventDetail />} />
+                <Route path="teams" element={<Teams />} />
+                <Route path="teams/:teamId/batch" element={<TeamBatch />} />
+                <Route path="notifications" element={<Notifications />} />
+                <Route path="my-registrations" element={<MyRegistrations />} />
+              </Route>
+            </Route>
+
           </Route>
 
           {/* Catch-all */}
